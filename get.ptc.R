@@ -13,6 +13,7 @@ chroms.to.keep = paste0("chr", 1:22)
 
 A549.transcripts = GenomicFeatures::transcripts(A549.TxDb)
 A549.transcripts = A549.transcripts[seqnames(A549.transcripts) %in% chroms.to.keep]
+A549.transcripts$tx_id = as.character(A549.transcripts$tx_id)
 seqlevels(A549.transcripts) = chroms.to.keep
 A549.transcripts$"spliceR.isoform_id" = A549.transcripts$tx_id
 
@@ -20,7 +21,7 @@ exon.transcripts = exonsBy(A549.TxDb, by = "tx")
 A549.exons = do.call(c, lapply(names(exon.transcripts), function(x) {b = exon.transcripts[[x]]; mcols(b) = cbind(mcols(b), tx_id = x); return(b) } ))
 
 # A549.exons = GenomicFeatures::exons(A549.TxDb)
-A549.exons = A549.exons[seqnames(A549.exons) %in% chroms.to.keep]
+A549.exons = A549.exons[seqnames(A549.exons) %in% chroms.to.keep
 seqlevels(A549.exons) = chroms.to.keep
 
 

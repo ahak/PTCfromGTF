@@ -36,3 +36,5 @@ seqlevels(sample.exons) = chroms.to.keep
 sample.SpliceRList = SpliceRList(sample.transcripts, sample.exons, "hg38", "cufflinks","sample")
 
 sample.PTC = annotatePTC(sample.SpliceRList, cds=ucscCDS, Hsapiens, PTCDistance=50)
+
+save.image(sample.PTC, file = paste0(prefix, ".RData"))

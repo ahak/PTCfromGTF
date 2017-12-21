@@ -1,31 +1,38 @@
+args = commandArgs(trailingOnly = TRUE)
+
+if (length(args)==0) {
+  stop("The gtf file should be provided as the first argument.n", call.=FALSE)
+}
+
+gtfile = args[1]
+prefix = tools::file_path_sans_ext(gtffile)
+
 library("GenomicFeatures")
 library("spliceR")
-
 library("BSgenome.Hsapiens.UCSC.hg38",character.only = TRUE)
 
 ucscCDS <- getCDS(selectedGenome="hg38", repoName="UCSC")
 
-A549.gtffile = "A549.transcripts_stranded.gtf"
-A549.TxDb = makeTxDbFromGFF(A549.gtffile, organism = "Homo sapiens")
+TxDb = makeTxDbFromGFF(gtffile, organism = "Homo sapiens")
 
 chroms.to.keep = paste0("chr", 1:22)
 
 
-A549.transcripts = GenomicFeatures::transcripts(A549.TxDb)
-A549.transcripts = A549.transcripts[seqnames(A549.transcripts) %in% chroms.to.keep]
-A549.transcripts$tx_id = as.character(A549.transcripts$tx_id)
-seqlevels(A549.transcripts) = chroms.to.keep
-A549.transcripts$"spliceR.isoform_id" = A549.transcripts$tx_id
+sample.transcripts = GenomicFeatures::transcripts(TxDb)
+sample.transcripts = sample.transcripts[seqnames(sample.transcripts) %in% chroms.to.keep]
+sample.transcripts$tx_id = as.character(sample.transcripts$tx_id)
+seqlevels(sample.transcripts) = chroms.to.keep
+sample.transcripts$"spliceR.isoform_id" = sample.transcripts$tx_id
 
-exon.transcripts = exonsBy(A549.TxDb, by = "tx")
-A549.exons = do.call(c, lapply(names(exon.transcripts), function(x) {b = exon.transcripts[[x]]; mcols(b) = cbind(mcols(b), tx_id = x); return(b) } ))
+exon.transcripts = exonsBy(sample.TxDb, by = "tx")
+sample.exons = do.call(c, lapply(names(exon.transcripts), function(x) {b = exon.transcripts[[x]]; mcols(b) = cbind(mcols(b), tx_id = x); return(b) } ))
 
-# A549.exons = GenomicFeatures::exons(A549.TxDb)
-A549.exons = A549.exons[seqnames(A549.exons) %in% chroms.to.keep
-seqlevels(A549.exons) = chroms.to.keep
+# sample.exons = GenomicFeatures::exons(sample.TxDb)
+sample.exons = sample.exons[seqnames(sample.exons) %in% chroms.to.keep
+seqlevels(sample.exons) = chroms.to.keep
 
 
 
-A549.SpliceRList = SpliceRList(A549.transcripts, A549.exons, "hg38", "cufflinks","A549")
+sample.SpliceRList = SpliceRList(sample.transcripts, sample.exons, "hg38", "cufflinks","sample")
 
-A549.PTC = annotatePTC(A549.SpliceRList, cds=ucscCDS, Hsapiens, PTCDistance=50)
+sample.PTC = annotatePTC(sample.SpliceRList, cds=ucscCDS, Hsapiens, PTCDistance=50)

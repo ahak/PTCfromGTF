@@ -4,7 +4,7 @@ if (length(args)==0) {
   stop("The gtf file should be provided as the first argument.n", call.=FALSE)
 }
 
-gtfile = args[1]
+gtffile = args[1]
 prefix = tools::file_path_sans_ext(gtffile)
 
 library("GenomicFeatures")

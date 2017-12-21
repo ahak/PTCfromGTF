@@ -13,12 +13,12 @@ library("BSgenome.Hsapiens.UCSC.hg38",character.only = TRUE)
 
 ucscCDS <- getCDS(selectedGenome="hg38", repoName="UCSC")
 
-TxDb = makeTxDbFromGFF(gtffile, organism = "Homo sapiens")
+sample.TxDb = makeTxDbFromGFF(gtffile, organism = "Homo sapiens")
 
 chroms.to.keep = paste0("chr", 1:22)
 
 
-sample.transcripts = GenomicFeatures::transcripts(TxDb)
+sample.transcripts = GenomicFeatures::transcripts(sample.TxDb)
 sample.transcripts = sample.transcripts[seqnames(sample.transcripts) %in% chroms.to.keep]
 sample.transcripts$tx_id = as.character(sample.transcripts$tx_id)
 seqlevels(sample.transcripts) = chroms.to.keep

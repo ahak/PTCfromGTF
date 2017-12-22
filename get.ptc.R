@@ -28,10 +28,10 @@ exon.transcripts = exonsBy(sample.TxDb, by = "tx")
 sample.exons = do.call(c, lapply(names(exon.transcripts), function(x) {b = exon.transcripts[[x]]; mcols(b) = cbind(mcols(b), tx_id = x); return(b) } ))
 
 # sample.exons = GenomicFeatures::exons(sample.TxDb)
-sample.exons = sample.exons[seqnames(sample.exons) %in% chroms.to.keep
+sample.exons = sample.exons[seqnames(sample.exons) %in% chroms.to.keep ] 
 seqlevels(sample.exons) = chroms.to.keep
 
-
+sample.exons$"spliceR.isoform_id" = sample.exons$tx_id.X
 
 sample.SpliceRList = SpliceRList(sample.transcripts, sample.exons, "hg38", "cufflinks","sample")
 
